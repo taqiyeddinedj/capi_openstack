@@ -1,7 +1,3 @@
-# CAPI OpenStack Infrastructure
-
-GitOps repository for managing Kubernetes clusters on OpenStack using Cluster API (CAPI) and FluxCD.
-
 ## Overview
 
 This repository contains the infrastructure definitions for our Kubernetes management and workload clusters. We use CAPI with the OpenStack provider (CAPO) to declaratively manage cluster lifecycle across production and non-production environments.
