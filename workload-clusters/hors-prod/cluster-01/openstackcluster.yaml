@@ -1,0 +1,24 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: OpenStackCluster
+metadata:
+  name: hors-prod-cluster-01
+  namespace: hors-prod
+spec:
+  managedSubnets:
+    - cidr: 10.6.0.0/24
+      dnsNameservers:
+        - 8.8.8.8
+        - 8.8.4.4
+  externalNetwork:
+    filter:
+      name: "provider-net"
+  #cloudName: hors-prod # not served anymore under v1beta1
+  identityRef:
+    name: openstack-cloud-config-hors-prod
+    #kind: Secret
+    cloudName: hors-prod
+
+
+  apiServerLoadBalancer:
+    enabled: false
+  disableAPIServerFloatingIP: false

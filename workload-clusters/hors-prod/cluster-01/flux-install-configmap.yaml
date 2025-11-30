@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: flux-install
+  namespace: hors-prod
+data:
+  flux.yaml: |
+    ---
+    apiVersion: v1
+    kind: Namespace
+    metadata:
+      name: flux-system
+    ---
+    apiVersion: batch/v1
+    kind: Job
+    metadata:
+      name: install-flux-operator
+      namespace: kube-system
+    spec:
+      ttlSecondsAfterFinished: 600
+      template:
+        spec:
+          restartPolicy: OnFailure
+          serviceAccountName: default
+          containers:
+          - name: kubectl
+            image: bitnami/kubectl:1.33
+            command:
+            - bash
+            - -c
+            - |
+              # Wait for nodes to be Ready
+              until kubectl get nodes | grep Ready; do 
+                echo "Waiting for nodes..."
+                sleep 10
+              done
+              
+              # Install Flux Operator
+              kubectl apply -f https://github.com/controlplaneio-fluxcd/flux-operator/releases/latest/download/install.yaml
+              
+              # Wait for operator to be ready
+              kubectl wait --for=condition=available --timeout=300s \
+                deployment/flux-operator -n flux-operator-system
+              
+              # Create FluxInstance to install all Flux components
+              cat <<EOF | kubectl apply -f -
+              apiVersion: fluxcd.controlplane.io/v1
+              kind: FluxInstance
+              metadata:
+                name: flux
+                namespace: flux-system
+              spec:
+                distribution:
+                  version: "2.x"
+                  registry: "ghcr.io/fluxcd"
+                components:
+                  - source-controller
+                  - kustomize-controller
+                  - helm-controller
+                  - notification-controller
+                  - image-reflector-controller
+                  - image-automation-controller
+                sync:
+                  kind: GitRepository
+                  url: "http://172.16.117.127/dev_team/cluster-assets"
+                  ref: "refs/heads/main"
+                  path: "clusters/hors-prod/cluster-01"
+                  secret: "flux-system"
+              EOF
+              
+              # Create secret for GitLab authentication
+              kubectl create secret generic flux-system \
+                --namespace=flux-system \
+                --from-literal=username=oauth2 \
+                --from-literal=password=YOUR_GITLAB_TOKEN \
+                --dry-run=client -o yaml | kubectl apply -f -

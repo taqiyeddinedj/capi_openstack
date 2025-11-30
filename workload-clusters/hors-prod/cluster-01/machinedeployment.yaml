@@ -1,0 +1,29 @@
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: MachineDeployment
+metadata:
+  name: hors-prod-cluster-01-workers
+  namespace: hors-prod
+spec:
+  clusterName: hors-prod-cluster-01
+  replicas: 3
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: hors-prod-cluster-01
+      cluster.x-k8s.io/deployment-name: hors-prod-cluster-01-workers
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: hors-prod-cluster-01
+        cluster.x-k8s.io/deployment-name: hors-prod-cluster-01-workers
+    spec:
+      clusterName: hors-prod-cluster-01
+      version: v1.33.2
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
+          kind: KubeadmConfigTemplate
+          name: hors-prod-cluster-01-workers
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+        kind: OpenStackMachineTemplate
+        name: hors-prod-cluster-01-workers

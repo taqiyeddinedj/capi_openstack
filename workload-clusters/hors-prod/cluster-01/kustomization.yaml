@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: hors-prod
+resources:
+  - cluster.yaml
+  - openstackcluster.yaml
+  - kubeadmcontrolplane.yaml
+  - openstackmachinetemplate-controlplane.yaml
+  - machinedeployment.yaml
+  - kubeadmconfigtemplate.yaml
+  - openstackmachinetemplate-worker.yaml
+  - priorityclass-configmap.yaml
+  - calico-cni-configmap.yaml
+  - flux-install-configmap.yaml
+  - clusterresourceset.yaml

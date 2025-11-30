@@ -1,0 +1,27 @@
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: OpenStackMachineTemplate
+metadata:
+  name: hors-prod-cluster-01-workers
+  namespace: hors-prod
+spec:
+  template:
+    spec:
+      identityRef:
+        name: openstack-cloud-config-hors-prod
+        cloudName: hors-prod
+      
+      flavor: "medium"
+      
+      image:
+        filter:
+          name: "Ubuntu-24.04"
+      
+      sshKeyName: "blade02-key"
+      
+      #ports:
+        #- network:
+            #filter:
+              #name: "provider-net"
+      #securityGroups:
+        #- filter:
+            #name: "default"
