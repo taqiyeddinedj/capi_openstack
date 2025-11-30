@@ -6,13 +6,13 @@ This repository contains the infrastructure definitions for our Kubernetes manag
 
 - `clusters/` - Environment-specific cluster configurations
   - `management/` - Management cluster Flux configuration
-  - `nonprod/` - Non-production environment
+  - `hors-prod/` - Non-production environment
   - `prod/` - Production environment
 - `infrastructure/` - Platform components
   - `bootstrap/` - CAPI operator and base providers
   - `openstack/` - OpenStack provider and credentials
 - `workload-clusters/` - Workload cluster definitions
-  - `nonprod/` - Non-production workload clusters
+  - `hors-prod/` - Non-production workload clusters
   - `prod/` - Production workload clusters
 
 ## Prerequisites
